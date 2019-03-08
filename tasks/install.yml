@@ -1,0 +1,51 @@
+---
+
+- name: Create apache_exporter system group
+  group:
+    name: "{{ apache_exporter_system_group }}"
+    state: present
+    system: true
+
+- name: Create the apache_exporter user
+  user:
+    name: "{{ apache_exporter_system_user }}"
+    groups: "{{ apache_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+
+- name: Get apache_exporter binary to local folder
+  get_url:
+    url: "{{ apache_exporter_download_url }}"
+    dest: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
+  register: __download_binary
+  until: __download_binary is succeeded
+  retries: 5
+  delay: 2
+  delegate_to: localhost
+  check_mode: false
+
+- name: Unpack node_exporter binary
+  unarchive:
+    src: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
+    dest: "/tmp"
+    creates: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}/apache_exporter"
+  delegate_to: localhost
+  check_mode: false
+  become: false
+
+- name: Create local bin dir
+  file:
+    path: /usr/local/bin
+    state: directory
+    mode: 0755
+
+- name: Propagate apache_exporter binary
+  copy:
+    src: /tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}/apache_exporter
+    dest: /usr/local/bin/apache_exporter
+    mode: 0750
+    owner: "{{ apache_exporter_system_user }}"
+    group: "{{ apache_exporter_system_group }}"
+  notify: restart apache_exporter
