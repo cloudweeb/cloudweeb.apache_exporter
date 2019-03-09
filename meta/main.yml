@@ -21,6 +21,6 @@ galaxy_info:
   galaxy_tags:
     - prometheus
     - apache
-    - exporter
+    - monitoring
 
 dependencies: []
