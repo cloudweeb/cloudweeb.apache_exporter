@@ -1,8 +1,12 @@
+{{ ansible_managed | comment }}
+
 [Unit]
 Description=Prometheus Apache Exporter
-After=network.target
+After=network-online.target
+StartLimitInterval=0
 
 [Service]
+Type=simple
 User={{ apache_exporter_system_user }}
 Group={{ apache_exporter_system_group }}
 
@@ -14,3 +18,26 @@ ExecStart=/usr/local/bin/apache_exporter \
           -telemetry.address {{ apache_exporter_telemetry_address }} \
           -telemetry.endpoint {{ apache_exporter_telemetry_endpoint }}
 
+SyslogIdentifier=apache_exporter
+Restart=always
+RestartSec=1
+
+PrivateTmp=yes
+{% for m in ansible_mounts if m.mount == '/home' %}
+ProtectHome=read-only
+{% else %}
+ProtectHome=yes
+{% endfor %}
+NoNewPrivileges=yes
+
+{% if apache_exporter_systemd_version | int >= 232 %}
+ProtectSystem=strict
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=yes
+{% else %}
+ProtectSystem=full
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target
