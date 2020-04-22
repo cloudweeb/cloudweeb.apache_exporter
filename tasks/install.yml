@@ -25,8 +25,9 @@
   delay: 2
   delegate_to: localhost
   check_mode: false
+  become: false
 
-- name: Unpack node_exporter binary
+- name: Unpack apache_exporter binary
   unarchive:
     src: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
     dest: "/tmp"
