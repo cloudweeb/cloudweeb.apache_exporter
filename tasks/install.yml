@@ -26,6 +26,7 @@
   delay: 2
   delegate_to: "{{ 'localhost' if apache_exporter_download_localhost else inventory_hostname }}"
   check_mode: false
+  become: false
 
 - name: Unpack apache_exporter binary
   unarchive:
