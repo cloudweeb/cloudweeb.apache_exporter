@@ -32,9 +32,8 @@
     src: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}.tar.gz"
     dest: "/tmp"
     creates: "/tmp/apache_exporter-{{ apache_exporter_version }}.linux-{{ go_arch }}/apache_exporter"
-  become: "{{ false if not apache_exporter_download_localhost else omit }}"
   delegate_to: "{{ 'localhost' if apache_exporter_download_localhost else inventory_hostname }}"
-  check_mode: false
+  become: "{{ false if not apache_exporter_download_localhost else omit }}"
   become: false
 
 - name: Create local bin dir
