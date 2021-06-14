@@ -8,9 +8,9 @@ Group={{ apache_exporter_system_group }}
 
 ExecStart=/usr/local/bin/apache_exporter \
 {% if apache_exporter_ignore_https %}
-          -insecure \
+          --insecure \
 {% endif %}
-          -scrape_uri {{ apache_exporter_scrape_uri }} \
-          -telemetry.address {{ apache_exporter_telemetry_address }} \
-          -telemetry.endpoint {{ apache_exporter_telemetry_endpoint }}
+          --scrape_uri {{ apache_exporter_scrape_uri }} \
+          --telemetry.address {{ apache_exporter_telemetry_address }} \
+          --telemetry.endpoint {{ apache_exporter_telemetry_endpoint }}
 
