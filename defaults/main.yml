@@ -3,7 +3,7 @@
 apache_exporter_version: 0.5.0
 
 # Must we perform download and propagation from localhost (true) or not (false)
-apache_exporter_download_localhost: false
+apache_exporter_download_localhost: true
 
 apache_exporter_system_group: apache-exp
 apache_exporter_system_user: "{{ apache_exporter_system_group }}"
